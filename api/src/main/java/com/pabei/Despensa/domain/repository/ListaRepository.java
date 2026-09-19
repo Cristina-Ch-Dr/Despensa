@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface ListaRepository extends JpaRepository<Lista, Long> {
     List<Lista> findByNombre(String nombre);
-    List<Lista> findByGrupoId(Long grupoId);
-    Optional<Lista> findByNombreAndGrupoId(String nombre, Long grupoId);
+    List<Lista> findByGrupoGrupoId(Long grupoId);
+    Optional<Lista> findByNombreAndGrupoGrupoId(String nombre, Long grupoId);
 }
