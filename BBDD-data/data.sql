@@ -15,7 +15,8 @@ INSERT INTO usuario (usuario_id, nombre, apellidos, email, password, fecha_creac
 (1, 'Juan', 'Pérez García', 'juan.perez@email.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36DxJiFm', NOW()),
 (2, 'María', 'López Rodríguez', 'maria.lopez@email.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36DxJiFm', NOW()),
 (3, 'Carlos', 'Martínez Ruiz', 'carlos.martinez@email.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36DxJiFm', NOW()),
-(4, 'Ana', 'González Díaz', 'ana.gonzalez@email.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36DxJiFm', NOW());
+(4, 'Ana', 'González Díaz', 'ana.gonzalez@email.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36DxJiFm', NOW())
+ON CONFLICT (usuario_id) DO NOTHING;
 
 -- Insertar Grupos
 INSERT INTO grupo (grupo_id, nombre, descripcion, fecha_creacion) VALUES
