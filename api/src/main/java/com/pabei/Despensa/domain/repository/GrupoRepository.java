@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface GrupoRepository extends JpaRepository<Grupo, Long> {
     List<Grupo> findByNombre(String nombre);
-    Optional<Grupo> findByNombreAndUsuariosId(String nombre, Long usuarioId);
+    Optional<Grupo> findByNombreAndUsuariosUsuarioId(String nombre, Long usuarioId);
 }

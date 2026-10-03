@@ -1,0 +1,246 @@
+.login-page {
+    align-items: stretch;
+    display: grid;
+    gap: clamp(2rem, 8vw, 8rem);
+    grid-template-columns: minmax(0, 1fr) minmax(19rem, 28rem);
+    margin: 0 auto;
+    max-width: 70rem;
+    min-height: calc(100dvh - 4rem);
+    padding: clamp(6rem, 12vh, 9rem) 0 3rem;
+}
+
+.login-intro {
+    align-self: center;
+    max-width: 32rem;
+    padding-bottom: 3rem;
+}
+
+.eyebrow {
+    color: var(--green);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    margin: 0 0 1.25rem;
+    text-transform: uppercase;
+}
+
+h1,
+h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0;
+}
+
+h1 {
+    color: var(--forest);
+    font-size: clamp(3rem, 7vw, 6.6rem);
+    line-height: 0.95;
+    max-width: 8ch;
+}
+
+.intro-copy {
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin: 2rem 0 0;
+    max-width: 27rem;
+}
+
+.intro-note {
+    align-items: center;
+    color: var(--forest);
+    display: flex;
+    font-size: 0.85rem;
+    font-weight: 600;
+    gap: 0.75rem;
+    margin-top: 3.5rem;
+}
+
+.icon-badge {
+    align-items: center;
+    border-radius: 50%;
+    display: inline-flex;
+    height: 2rem;
+    justify-content: center;
+    width: 2rem;
+}
+
+.icon-badge--green {
+    background: var(--forest);
+}
+
+.login-card {
+    align-self: center;
+    background: #fafdf8;
+    border: 1px solid var(--line);
+    border-radius: 0.5rem;
+    box-shadow: 0 1.5rem 4rem rgb(36 52 28 / 8%);
+    padding: clamp(2rem, 5vw, 3.5rem);
+}
+
+.card-heading h2 {
+    color: var(--forest);
+    font-size: clamp(2.1rem, 4vw, 2.8rem);
+    line-height: 1;
+}
+
+.card-heading>p:last-child {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.75rem 0 0;
+}
+
+.login-form {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 2.25rem;
+}
+
+label {
+    color: var(--forest);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+input {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 0.25rem;
+    color: var(--ink);
+    min-height: 3.1rem;
+    outline: 0;
+    padding: 0.75rem 0.9rem;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+    width: 100%;
+}
+
+input:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgb(71 101 53 / 15%);
+}
+
+.field-heading {
+    align-items: baseline;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+a {
+    color: var(--green);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+}
+
+.forgot-password {
+    color: var(--forest);
+    font-size: 0.72rem;
+    justify-self: end;
+    margin-top: -0.15rem;
+    font-weight: 700;
+}
+
+.password-field {
+    position: relative;
+}
+
+.password-field input {
+    padding-right: 5rem;
+}
+
+.password-toggle {
+    background: none;
+    border: 0;
+    color: var(--forest);
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.5rem;
+    position: absolute;
+    right: 0.35rem;
+    top: 0.6rem;
+}
+
+.submit-button {
+    align-items: center;
+    background: #3b5a2d;
+    border: 0;
+    border-radius: 0.25rem;
+    color: var(--paper);
+    cursor: pointer;
+    display: flex;
+    font-weight: 700;
+    justify-content: space-between;
+    margin-top: 1.25rem;
+    min-height: 3.25rem;
+    padding: 0 1rem 0 1.25rem;
+    transition: background 160ms ease, transform 160ms ease;
+}
+
+.submit-button:hover {
+    background: var(--green);
+    transform: translateY(-1px);
+}
+
+.submit-button span {
+    font-size: 1.35rem;
+    font-weight: 400;
+}
+
+.submit-button:disabled {
+    cursor: wait;
+    opacity: 0.7;
+}
+
+.form-message {
+    font-size: 0.8rem;
+    margin: 0.75rem 0 0;
+}
+
+.form-message--error {
+    color: #9b2c2c;
+}
+
+.form-message--success {
+    color: var(--forest);
+}
+
+.register-prompt {
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin: 2rem 0 0;
+    text-align: center;
+}
+
+.register-prompt a {
+    font-weight: 700;
+}
+
+@media (max-width: 760px) {
+    .app-shell {
+        padding-inline: 1.25rem;
+    }
+
+    .brand-mark {
+        top: 1.5rem;
+    }
+
+    .login-page {
+        display: block;
+        min-height: 0;
+        padding-top: 6rem;
+    }
+
+    .login-intro {
+        padding-bottom: 3rem;
+    }
+
+    h1 {
+        font-size: clamp(3rem, 15vw, 4.5rem);
+    }
+
+    .intro-note {
+        margin-top: 2rem;
+    }
+}
