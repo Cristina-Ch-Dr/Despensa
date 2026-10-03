@@ -22,19 +22,12 @@ public class RegistroService implements RegistroPort {
 
     @Override
     public UsuarioResponse registrar(RegistroRequest request) {
-        validarContrasenas(request);
         validarEmailNoExiste(request.getEmail());
 
         Usuario usuario = crearUsuario(request);
         Usuario usuarioGuardado = usuarioRepository.save(usuario);
 
         return mapearAResponse(usuarioGuardado);
-    }
-
-    private void validarContrasenas(RegistroRequest request) {
-        if (!request.getPassword().equals(request.getPasswordConfirmacion())) {
-            throw new ContrasenasNoCoincidentesException();
-        }
     }
 
     private void validarEmailNoExiste(String email) {

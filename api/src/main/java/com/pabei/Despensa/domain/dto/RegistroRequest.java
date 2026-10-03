@@ -12,5 +12,4 @@ public class RegistroRequest {
     private String apellidos;
     private String email;
     private String password;
-    private String passwordConfirmacion;
 }
