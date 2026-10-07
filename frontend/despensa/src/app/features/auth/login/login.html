@@ -1,3 +1,10 @@
+<header class="app-banner">
+	<a class="brand-mark auth-brand" routerLink="/login" aria-label="La Despensa, ir al inicio">
+		<span class="brand-mark__leaf" aria-hidden="true"></span>
+		<span>la despensa</span>
+	</a>
+</header>
+
 <section class="login-page" aria-labelledby="login-title">
 	<div class="login-intro">
 		<p class="eyebrow">Tu compra, en compañía</p>
@@ -37,7 +44,6 @@
 			<a class="forgot-password" href="/forgot-password">¿La has olvidado?</a>
 
 			<p class="form-message form-message--error" aria-live="polite">{{ errorMessage() }}</p>
-			<p class="form-message form-message--success" aria-live="polite">{{ successMessage() }}</p>
 			<button class="submit-button" type="submit" [disabled]="isSubmitting()">
 				{{ isSubmitting() ? 'Entrando...' : 'Entrar' }} <span aria-hidden="true">→</span>
 			</button>

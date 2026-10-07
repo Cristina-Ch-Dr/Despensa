@@ -218,14 +218,6 @@ a {
 }
 
 @media (max-width: 760px) {
-    .app-shell {
-        padding-inline: 1.25rem;
-    }
-
-    .brand-mark {
-        top: 1.5rem;
-    }
-
     .login-page {
         display: block;
         min-height: 0;

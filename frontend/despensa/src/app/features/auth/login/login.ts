@@ -1,19 +1,20 @@
 import { Component, inject, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
-  imports: [],
+  imports: [RouterLink],
   selector: 'app-login',
   styleUrl: './login.css',
   templateUrl: './login.html',
 })
 export class Login {
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   protected readonly showPassword = signal(false);
   protected readonly isSubmitting = signal(false);
   protected readonly errorMessage = signal('');
-  protected readonly successMessage = signal('');
 
   protected togglePassword(): void {
     this.showPassword.update((visible) => !visible);
@@ -29,12 +30,11 @@ export class Login {
 
     this.isSubmitting.set(true);
     this.errorMessage.set('');
-    this.successMessage.set('');
 
     this.authService.login({ email, password }).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        this.successMessage.set('Sesión iniciada correctamente.');
+        void this.router.navigateByUrl('/app');
       },
       error: () => {
         this.isSubmitting.set(false);
