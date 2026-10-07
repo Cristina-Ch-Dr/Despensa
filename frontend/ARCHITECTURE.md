@@ -42,6 +42,7 @@ src/
     ├── core/
     │   ├── models/           # interfaces que reflejan los DTOs del backend
     │   ├── services/         # un servicio por recurso, usa httpResource internamente
+    │   ├── layout/           # shell de /app: banner, navegación y RouterOutlet de páginas hijas
     │   ├── interceptors/
     │   │   └── auth.interceptor.ts
     │   ├── guards/
@@ -132,11 +133,11 @@ ng build
 | Fecha | Cambio |
 |---|---|
 | 2026-09-24 | Se sustituye la plantilla inicial de Angular por un shell raíz reutilizable con identidad visual común; el login queda como primera ruta lazy de la aplicación. |
+| 2026-10-07 | Se añade `core/layout/app-layout` para la zona `/app`, con sidebar y outlet de rutas hijas; login y registro siguen fuera del shell. |
 
 ## Tareas recomendadas para el siguiente sprint
 
 - Autenticación completa + guard de rutas.
 - CRUD básico de grupos y listas con datos reales (vía `httpResource`).
 - UI mínima para añadir productos a una lista y marcarlos como comprados.
-- Tests unitarios (Vitest) para los servicios críticos.
 - Pipeline de CI que ejecute lint y tests.

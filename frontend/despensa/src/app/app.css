@@ -1,34 +1,5 @@
 :host {
 	display: block;
 	min-height: 100dvh;
-}
-
-.app-shell {
-	min-height: 100dvh;
-	padding: 2rem clamp(1.25rem, 4vw, 4rem);
 	position: relative;
-}
-
-.brand-mark {
-	align-items: center;
-	color: var(--ink);
-	display: inline-flex;
-	font-family: var(--font-display);
-	font-size: 1.25rem;
-	font-weight: 700;
-	gap: 0.65rem;
-	letter-spacing: 0.01em;
-	position: absolute;
-	text-decoration: none;
-	top: 2rem;
-	z-index: 1;
-}
-
-.brand-mark__leaf {
-	background: var(--green);
-	border-radius: 100% 0 100% 0;
-	display: inline-block;
-	height: 1.2rem;
-	transform: rotate(-12deg);
-	width: 1.2rem;
 }

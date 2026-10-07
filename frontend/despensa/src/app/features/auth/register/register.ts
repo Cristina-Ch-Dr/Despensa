@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -8,7 +9,7 @@ type Errores = Partial<Record<Campo, string>>;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 @Component({
-  imports: [],
+  imports: [RouterLink],
   selector: 'app-register',
   styleUrl: './register.css',
   templateUrl: './register.html',

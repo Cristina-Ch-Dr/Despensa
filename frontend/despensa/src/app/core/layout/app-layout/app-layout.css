@@ -1,0 +1,136 @@
+:host {
+	display: block;
+	min-height: 100dvh;
+}
+
+.app-layout {
+	background: #f8faf6;
+	min-height: 100dvh;
+}
+
+.skip-link {
+	background: var(--forest);
+	border-radius: 0.25rem;
+	color: white;
+	left: 1rem;
+	padding: 0.75rem 1rem;
+	position: fixed;
+	top: 1rem;
+	transform: translateY(-200%);
+	z-index: 2;
+}
+
+.skip-link:focus {
+	transform: translateY(0);
+}
+
+.app-banner {
+	align-items: center;
+	background: #fff;
+	border-bottom: 1px solid var(--line);
+	display: flex;
+	gap: 2rem;
+	min-height: 5rem;
+	padding: 0.75rem clamp(1.25rem, 4vw, 3rem);
+}
+
+.app-banner__message {
+	color: var(--muted);
+	font-size: 0.9rem;
+	margin: 0;
+}
+
+.app-layout__body {
+	display: grid;
+	grid-template-columns: 15rem minmax(0, 1fr);
+	min-height: calc(100dvh - 5rem);
+}
+
+.app-sidebar {
+	background: #f1f5ee;
+	border-right: 1px solid var(--line);
+	padding: 2rem 1rem;
+}
+
+.app-sidebar__heading {
+	color: var(--muted);
+	font-size: 0.7rem;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	margin: 0 0 0.8rem 0.75rem;
+	text-transform: uppercase;
+}
+
+.app-sidebar__links {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.app-sidebar__link {
+	align-items: center;
+	border-radius: 0.3rem;
+	color: var(--forest);
+	display: flex;
+	font-size: 0.9rem;
+	font-weight: 600;
+	gap: 0.75rem;
+	padding: 0.75rem;
+	text-decoration: none;
+}
+
+.app-sidebar__icon {
+	height: 1.25rem;
+	object-fit: contain;
+	width: 1.25rem;
+}
+
+.app-sidebar__link:hover,
+.app-sidebar__link--active {
+	background: #e2ebdc;
+	color: var(--forest);
+}
+
+.app-sidebar__link:focus-visible,
+.app-banner__brand:focus-visible {
+	outline: 3px solid var(--green);
+	outline-offset: 3px;
+}
+
+.app-content {
+	min-width: 0;
+	padding: clamp(1.5rem, 4vw, 3.5rem);
+}
+
+@media (max-width: 700px) {
+	.app-banner {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 0.25rem;
+		padding-block: 1rem;
+	}
+
+	.app-layout__body {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.app-sidebar {
+		border-bottom: 1px solid var(--line);
+		border-right: 0;
+		padding: 0.75rem 1rem;
+	}
+
+	.app-sidebar__heading {
+		margin-bottom: 0.35rem;
+	}
+
+	.app-sidebar__links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem;
+	}
+
+	.app-content {
+		padding: 1.5rem 1.25rem;
+	}
+}
