@@ -1,1 +1,100 @@
-<p>amigos works!</p>
+<section class="friends-page" aria-labelledby="friends-title">
+	<header class="friends-page__header">
+		<p class="eyebrow">La compra se disfruta más en compañía</p>
+		<h1 id="friends-title">Amigos</h1>
+		<p class="friends-page__intro">
+			Conecta con otras personas para compartir la organización de la compra.
+		</p>
+	</header>
+
+	@if (usuarioId() === null) {
+		<p class="account-notice" role="status">
+			Inicia sesión para enviar o responder solicitudes de amistad.
+		</p>
+	} @else {
+		<div class="friends-grid">
+			<section class="friends-card" aria-labelledby="send-request-title">
+				<p class="card-eyebrow">Invitación</p>
+				<h2 id="send-request-title">Enviar una solicitud</h2>
+				<p class="card-copy">Introduce el correo electrónico de la persona que quieres añadir.</p>
+
+				<form (submit)="enviarSolicitud($event)">
+					<label for="emailDestinatario">Correo electrónico</label>
+					<input
+						id="emailDestinatario"
+						name="emailDestinatario"
+						type="email"
+						autocomplete="email"
+						maxlength="254"
+						placeholder="nombre@ejemplo.com"
+						required
+						[disabled]="isSending()"
+						aria-describedby="send-error send-success"
+					/>
+					<p id="send-error" class="form-message form-message--error" aria-live="polite">
+						{{ sendError() }}
+					</p>
+					<p id="send-success" class="form-message form-message--success" aria-live="polite">
+						{{ sendSuccess() }}
+					</p>
+					<button type="submit" [disabled]="isSending()">
+						{{ isSending() ? 'Enviando...' : 'Enviar solicitud' }}
+					</button>
+				</form>
+			</section>
+
+			<section class="friends-card" aria-labelledby="respond-request-title">
+				<p class="card-eyebrow">Solicitudes recibidas</p>
+				<h2 id="respond-request-title">Responder una solicitud</h2>
+				<p class="card-copy">
+					Introduce el ID de la solicitud recibida para aceptarla o rechazarla.
+				</p>
+
+				<form (submit)="responderSolicitud($event)">
+					<label for="solicitudId">ID de la solicitud</label>
+					<input
+						id="solicitudId"
+						name="solicitudId"
+						type="number"
+						min="1"
+						step="1"
+						inputmode="numeric"
+						required
+						[disabled]="isResponding()"
+						aria-describedby="response-error response-success"
+					/>
+					<p id="response-error" class="form-message form-message--error" aria-live="polite">
+						{{ responseError() }}
+					</p>
+					<p id="response-success" class="form-message form-message--success" aria-live="polite">
+						{{ responseSuccess() }}
+					</p>
+					<div class="response-actions">
+						<button
+							type="submit"
+							name="accion"
+							value="aceptar"
+							[disabled]="isResponding()"
+						>
+							{{ isResponding() ? 'Procesando...' : 'Aceptar' }}
+						</button>
+						<button
+							class="button-secondary"
+							type="submit"
+							name="accion"
+							value="rechazar"
+							[disabled]="isResponding()"
+						>
+							Rechazar
+						</button>
+					</div>
+				</form>
+			</section>
+		</div>
+
+		<p class="feature-note">
+			El backend aún no ofrece una consulta para listar amigos o solicitudes pendientes; por ahora
+			puedes responder usando el ID que recibiste.
+		</p>
+	}
+</section>

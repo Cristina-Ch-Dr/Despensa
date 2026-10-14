@@ -28,8 +28,8 @@ src/
 │       │   ├── login/
 │       │   └── register/
 │       ├── home/              # Página inicial dentro del layout
-│       ├── groups/            # Página vacía de grupos
-│       └── friends/           # Página vacía de amigos
+│       ├── grupos/            # Grupos
+│       └── amigos/            # Envío y respuesta de solicitudes de amistad
 ├── assets/                    # Recursos estáticos
 ├── environments/              # Configuración de entorno
 ├── main.ts                    # Arranque de la aplicación
@@ -105,7 +105,14 @@ El banner, el sidebar responsive, el enlace para saltar al contenido y la zona p
 
 ## API y autenticación actuales
 
-`AuthService` ofrece `login` y `register` en `/api/auth/login` y `/api/auth/register`. Si la respuesta contiene un token, lo guarda en `sessionStorage` y lo expone mediante un `signal`; `logout()` elimina ese token. Login y registro gestionan actualmente su propio estado de envío y sus mensajes.
+`AuthService` ofrece `login` y `register` en `/api/auth/login` y `/api/auth/register`. La respuesta actual del backend contiene `usuarioId`, `nombre`, `apellidos` y `email`; el servicio conserva el ID en `sessionStorage` para las operaciones que necesitan identificar al usuario. Si la respuesta contiene un token, también lo guarda y lo expone mediante un `signal`; `logout()` elimina ambos datos. Login y registro gestionan actualmente su propio estado de envío y sus mensajes.
+
+`AmigosService`, dentro de `features/amigos`, ofrece las operaciones de solicitudes del backend:
+
+- `POST /api/amigos/solicitudes` para enviar una solicitud (`solicitanteId`, `emailDestinatario`).
+- `POST /api/amigos/solicitudes/{solicitudId}/aceptar` y `.../{solicitudId}/rechazar` para responder (`destinatarioId`).
+
+La pantalla permite enviar una solicitud por correo y responder indicando el ID recibido. El backend todavía no expone consultas para listar amigos o solicitudes pendientes, por lo que la interfaz no presenta listados inventados.
 
 Antes de ampliar la autenticación, confirma con el contrato real del backend la forma de la respuesta y las necesidades de sesión. No asumas que existe una sesión de usuario completa porque haya un token almacenado. Si se incorporan peticiones autenticadas, concentra la adición del token en un interceptor y decide el comportamiento de rutas protegidas de forma coherente. No guardes secretos ni credenciales en el código fuente.
 

@@ -16,17 +16,22 @@ export interface RegisterRequest {
 }
 
 export interface AuthResponse {
+  usuarioId: number;
+  nombre: string;
+  apellidos: string;
+  email: string;
   token?: string;
-  usuario?: unknown;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly tokenKey = 'despensa_auth_token';
+  private readonly userIdKey = 'despensa_user_id';
   private readonly apiUrl = `${environment.apiUrl}/auth`;
 
   readonly token = signal<string | null>(sessionStorage.getItem(this.tokenKey));
+  readonly usuarioId = signal<number | null>(this.readStoredUserId());
 
   login(credentials: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
@@ -34,6 +39,7 @@ export class AuthService {
         if (response.token) {
           this.storeToken(response.token);
         }
+        this.storeUserId(response.usuarioId);
       }),
     );
   }
@@ -44,13 +50,16 @@ export class AuthService {
         if (response.token) {
           this.storeToken(response.token);
         }
+        this.storeUserId(response.usuarioId);
       }),
     );
   }
 
   logout(): void {
     sessionStorage.removeItem(this.tokenKey);
+    sessionStorage.removeItem(this.userIdKey);
     this.token.set(null);
+    this.usuarioId.set(null);
   }
 
   private storeToken(token: string): void {
@@ -60,5 +69,25 @@ export class AuthService {
 
     sessionStorage.setItem(this.tokenKey, token);
     this.token.set(token);
+  }
+
+  private readStoredUserId(): number | null {
+    const storedUserId = sessionStorage.getItem(this.userIdKey);
+    if (storedUserId === null) {
+      return null;
+    }
+
+    const userId = Number(storedUserId);
+    if (!Number.isSafeInteger(userId) || userId <= 0) {
+      sessionStorage.removeItem(this.userIdKey);
+      return null;
+    }
+
+    return userId;
+  }
+
+  private storeUserId(userId: number): void {
+    sessionStorage.setItem(this.userIdKey, String(userId));
+    this.usuarioId.set(userId);
   }
 }

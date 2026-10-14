@@ -56,6 +56,7 @@ src/
     │
     ├── features/
     │   ├── auth/
+    │   ├── amigos/           # Enviar y responder solicitudes de amistad
     │   ├── usuarios/
     │   ├── grupos/
     │   ├── listas/
@@ -92,7 +93,9 @@ src/
 Los endpoints reales viven en el backend (Spring Boot). En vez de duplicar aquí cada campo y mantenerlo sincronizado a mano, este documento solo lista los **recursos principales**; el detalle de cada contrato (payloads, códigos de error) debe consultarse en el Swagger/OpenAPI del backend cuando esté publicado.
 
 - `POST /api/auth/register`, `POST /api/auth/login`
-- `GET /api/users/me`, `GET /api/users/{id}/friends`
+- `POST /api/amigos/solicitudes`
+- `POST /api/amigos/solicitudes/{solicitudId}/aceptar`
+- `POST /api/amigos/solicitudes/{solicitudId}/rechazar`
 - `GET /api/groups`, `POST /api/groups`, `GET /api/groups/{id}`
 - `GET /api/groups/{groupId}/lists`, `POST /api/groups/{groupId}/lists`
 - `GET /api/lists/{listId}/items`, `POST /api/lists/{listId}/items`
@@ -101,6 +104,8 @@ Los endpoints reales viven en el backend (Spring Boot). En vez de duplicar aquí
 Todas las rutas protegidas validan el JWT en el header `Authorization`.
 
 > Cuando el backend tenga Swagger/OpenAPI expuesto, sustituir esta lista por un enlace directo — es la única fuente que no se desincroniza sola.
+
+Los endpoints actuales de amistad solo permiten enviar y responder solicitudes; no hay todavía una operación para consultar amigos o solicitudes pendientes. La pantalla de amigos limita su alcance a las acciones disponibles y necesita el ID de solicitud que el backend devuelve al enviarla.
 
 ## Primeros pasos para arrancar el frontend
 
@@ -134,6 +139,7 @@ ng build
 |---|---|
 | 2026-09-24 | Se sustituye la plantilla inicial de Angular por un shell raíz reutilizable con identidad visual común; el login queda como primera ruta lazy de la aplicación. |
 | 2026-10-07 | Se añade `core/layout/app-layout` para la zona `/app`, con sidebar y outlet de rutas hijas; login y registro siguen fuera del shell. |
+| 2026-10-14 | Se añade el flujo inicial de solicitudes de amistad y se conserva el ID de usuario devuelto por autenticación para construir sus peticiones. |
 
 ## Tareas recomendadas para el siguiente sprint
 
