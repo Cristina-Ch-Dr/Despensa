@@ -68,4 +68,12 @@ class AgregarAmigoControllerTest {
         assertEquals(response, result.getBody());
         verify(agregarAmigoPort).rechazarSolicitud(10L, 2L);
     }
+
+    @Test
+    void cancelarSolicitudDevuelveNoContentYDelegaAlPuerto() {
+        ResponseEntity<Void> result = controller.cancelarSolicitud(10L, 1L);
+
+        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
+        verify(agregarAmigoPort).cancelarSolicitud(10L, 1L);
+    }
 }

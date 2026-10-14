@@ -3,6 +3,8 @@ package com.pabei.Despensa.application.service;
 import com.pabei.Despensa.application.services.AgregarAmigoService;
 import com.pabei.Despensa.domain.dto.SolicitudAmistadResponse;
 import com.pabei.Despensa.domain.exceptions.SolicitudAmistadInvalidaException;
+import com.pabei.Despensa.domain.exceptions.SolicitudAmistadConflictoException;
+import com.pabei.Despensa.domain.model.DireccionSolicitudAmistad;
 import com.pabei.Despensa.domain.model.EstadoSolicitudAmistad;
 import com.pabei.Despensa.domain.model.SolicitudAmistad;
 import com.pabei.Despensa.domain.model.Usuario;
@@ -31,6 +33,73 @@ class AgregarAmigoServiceTest {
 
     @InjectMocks
     private AgregarAmigoService agregarAmigoService;
+
+    @Test
+    void listarAmigosDevuelveDatosPublicosDeLosAmigos() {
+        Usuario usuario = usuario(1L, "ana@example.com");
+        Usuario amigo = usuario(2L, "bea@example.com");
+        amigo.setNombre("Bea");
+        amigo.setApellidos("Lopez");
+        usuario.getAmigos().add(amigo);
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+
+        var amigos = agregarAmigoService.listarAmigos(1L);
+
+        assertEquals(1, amigos.size());
+        assertEquals(2L, amigos.getFirst().getUsuarioId());
+        assertEquals("Bea", amigos.getFirst().getNombre());
+        assertEquals("bea@example.com", amigos.getFirst().getEmail());
+    }
+
+    @Test
+    void listarSolicitudesUsaBandejaYEstadoSolicitados() {
+        Usuario solicitante = usuario(1L, "ana@example.com");
+        Usuario destinatario = usuario(2L, "bea@example.com");
+        SolicitudAmistad solicitud = solicitud(10L, solicitante, destinatario);
+        when(usuarioRepository.findById(2L)).thenReturn(Optional.of(destinatario));
+        when(solicitudAmistadRepository.findAllByDestinatario_UsuarioIdAndEstado(
+                2L, EstadoSolicitudAmistad.PENDIENTE
+        )).thenReturn(java.util.List.of(solicitud));
+
+        var solicitudes = agregarAmigoService.listarSolicitudes(
+                2L,
+                EstadoSolicitudAmistad.PENDIENTE,
+                DireccionSolicitudAmistad.RECIBIDAS
+        );
+
+        assertEquals(1, solicitudes.size());
+        assertEquals(10L, solicitudes.getFirst().getSolicitudId());
+        verify(solicitudAmistadRepository).findAllByDestinatario_UsuarioIdAndEstado(
+                2L, EstadoSolicitudAmistad.PENDIENTE
+        );
+        verify(solicitudAmistadRepository, never())
+                .findAllBySolicitante_UsuarioIdAndEstado(any(), any());
+    }
+
+    @Test
+    void listarSolicitudesEnviadasBuscaPorSolicitante() {
+        Usuario solicitante = usuario(1L, "ana@example.com");
+        Usuario destinatario = usuario(2L, "bea@example.com");
+        SolicitudAmistad solicitud = solicitud(10L, solicitante, destinatario);
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(solicitante));
+        when(solicitudAmistadRepository.findAllBySolicitante_UsuarioIdAndEstado(
+                1L, EstadoSolicitudAmistad.PENDIENTE
+        )).thenReturn(java.util.List.of(solicitud));
+
+        var solicitudes = agregarAmigoService.listarSolicitudes(
+                1L,
+                EstadoSolicitudAmistad.PENDIENTE,
+                DireccionSolicitudAmistad.ENVIADAS
+        );
+
+        assertEquals(1, solicitudes.size());
+        assertEquals(10L, solicitudes.getFirst().getSolicitudId());
+        verify(solicitudAmistadRepository).findAllBySolicitante_UsuarioIdAndEstado(
+                1L, EstadoSolicitudAmistad.PENDIENTE
+        );
+        verify(solicitudAmistadRepository, never())
+                .findAllByDestinatario_UsuarioIdAndEstado(any(), any());
+    }
 
     @Test
     void enviarSolicitudCuandoUsuariosExistenGuardaSolicitudPendiente() {
@@ -121,6 +190,55 @@ class AgregarAmigoServiceTest {
 
         verify(solicitudAmistadRepository, never()).save(any(SolicitudAmistad.class));
         verifyNoInteractions(usuarioRepository);
+    }
+
+    @Test
+    void cancelarSolicitudPendienteDelSolicitanteLaElimina() {
+        SolicitudAmistad solicitud = solicitud(
+                10L,
+                usuario(1L, "ana@example.com"),
+                usuario(2L, "bea@example.com")
+        );
+        when(solicitudAmistadRepository.findById(10L)).thenReturn(Optional.of(solicitud));
+
+        agregarAmigoService.cancelarSolicitud(10L, 1L);
+
+        verify(solicitudAmistadRepository).delete(solicitud);
+    }
+
+    @Test
+    void destinatarioNoPuedeCancelarLaSolicitud() {
+        SolicitudAmistad solicitud = solicitud(
+                10L,
+                usuario(1L, "ana@example.com"),
+                usuario(2L, "bea@example.com")
+        );
+        when(solicitudAmistadRepository.findById(10L)).thenReturn(Optional.of(solicitud));
+
+        assertThrows(
+                SolicitudAmistadInvalidaException.class,
+                () -> agregarAmigoService.cancelarSolicitud(10L, 2L)
+        );
+
+        verify(solicitudAmistadRepository, never()).delete(any(SolicitudAmistad.class));
+    }
+
+    @Test
+    void noSePuedeCancelarUnaSolicitudRespondida() {
+        SolicitudAmistad solicitud = solicitud(
+                10L,
+                usuario(1L, "ana@example.com"),
+                usuario(2L, "bea@example.com")
+        );
+        solicitud.setEstado(EstadoSolicitudAmistad.ACEPTADA);
+        when(solicitudAmistadRepository.findById(10L)).thenReturn(Optional.of(solicitud));
+
+        assertThrows(
+                SolicitudAmistadConflictoException.class,
+                () -> agregarAmigoService.cancelarSolicitud(10L, 1L)
+        );
+
+        verify(solicitudAmistadRepository, never()).delete(any(SolicitudAmistad.class));
     }
 
     private Usuario usuario(Long id, String email) {
