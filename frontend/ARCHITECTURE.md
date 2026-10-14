@@ -56,7 +56,8 @@ src/
     │
     ├── features/
     │   ├── auth/
-    │   ├── amigos/           # Enviar y responder solicitudes de amistad
+    │   ├── amigos/           # Listado y gestión de amistades
+    │   │   └── solicitudes/  # Envío y respuesta de solicitudes
     │   ├── usuarios/
     │   ├── grupos/
     │   ├── listas/
@@ -74,10 +75,13 @@ src/
 - **Nombres**: carpetas en kebab-case, componentes en PascalCase con sufijo `Component`.
 - **Sin barrel files** (`index.ts` que reexportan todo): Angular los desaconseja porque rompen el tree-shaking y ralentizan el build. Importar siempre desde la ruta real del archivo.
 - **Servicios**: un servicio por recurso en `core/services`, con métodos que reflejan los endpoints del backend. Exponen `resource`/`httpResource`, no Observables sueltos que cada componente tiene que gestionar a mano.
+- **Ubicación de servicios**: todos los servicios HTTP van en `core/services`, también los específicos de una feature; los componentes de feature los importan desde allí.
 - **Modelos**: interfaces en `core/models` que reflejan los DTOs de Spring Boot. Si un DTO cambia, este es el primer sitio a tocar.
 - **Rutas**: lazy loading con `loadComponent` para todo lo que no sea crítico en el primer render.
 - **Estado**: empezar con signals a nivel de componente/servicio; considerar una librería de estado global (NgRx Signals, por ejemplo) solo si aparece estado compartido complejo entre features no relacionadas.
-- **Notificaciones/errores**: un servicio compartido (`shared/services/notification.service.ts`) para toasts/errores en vez de que cada componente maneje su propio mensaje.
+- **Notificaciones/errores**: un servicio compartido en `core/services` para toasts/errores en vez de que cada componente maneje su propio mensaje.
+- **Estilos**: tokens visuales y patrones reutilizados (campos, botones, mensajes y superficies) se centralizan en `src/styles.css`; los CSS de componentes contienen solo variaciones y composición específicas de cada vista.
+- **Diseño responsive**: toda página debe diseñarse y revisarse también en móvil. En pantallas pequeñas se evita forzar alturas o centrar verticalmente secciones de navegación/contenido de forma que cree huecos innecesarios; el contenido debe seguir a la navegación sin espacios vacíos artificiales.
 - **Tests**: unitarios junto a cada archivo (`*.spec.ts`), con Vitest.
 - **Environments**: `src/environments` para URLs de API; nada de claves sensibles en el frontend.
 - **Lint y formato**: ESLint + Prettier desde el inicio.
@@ -86,6 +90,7 @@ src/
 
 - JWT emitido por Spring Security; el interceptor de `core/interceptors` añade `Authorization: Bearer <token>` a las peticiones protegidas.
 - **Guardar el token en memoria (signal) + `sessionStorage`** como respaldo entre recargas, no en `localStorage` puro si se puede evitar, para reducir superficie ante XSS. Si el backend soporta cookies `httpOnly`, es preferible a cualquier storage accesible por JS — pendiente de decidir con el backend.
+- El cierre de sesión actual elimina el token y el ID de usuario en el cliente. Un endpoint de logout no es necesario para JWT sin estado, salvo que el backend implemente revocación o invalidación de tokens.
 - Pendiente de definir: expiración/refresh del token. Anotar aquí la decisión en cuanto se tome.
 
 ## Contratos API
@@ -93,9 +98,12 @@ src/
 Los endpoints reales viven en el backend (Spring Boot). En vez de duplicar aquí cada campo y mantenerlo sincronizado a mano, este documento solo lista los **recursos principales**; el detalle de cada contrato (payloads, códigos de error) debe consultarse en el Swagger/OpenAPI del backend cuando esté publicado.
 
 - `POST /api/auth/register`, `POST /api/auth/login`
+- `GET /api/amigos?usuarioId={id}`
+- `GET /api/amigos/solicitudes?usuarioId={id}&estado=PENDIENTE&direccion=RECIBIDAS|ENVIADAS`
 - `POST /api/amigos/solicitudes`
 - `POST /api/amigos/solicitudes/{solicitudId}/aceptar`
 - `POST /api/amigos/solicitudes/{solicitudId}/rechazar`
+- `DELETE /api/amigos/solicitudes/{solicitudId}?solicitanteId={id}`
 - `GET /api/groups`, `POST /api/groups`, `GET /api/groups/{id}`
 - `GET /api/groups/{groupId}/lists`, `POST /api/groups/{groupId}/lists`
 - `GET /api/lists/{listId}/items`, `POST /api/lists/{listId}/items`
@@ -105,7 +113,7 @@ Todas las rutas protegidas validan el JWT en el header `Authorization`.
 
 > Cuando el backend tenga Swagger/OpenAPI expuesto, sustituir esta lista por un enlace directo — es la única fuente que no se desincroniza sola.
 
-Los endpoints actuales de amistad solo permiten enviar y responder solicitudes; no hay todavía una operación para consultar amigos o solicitudes pendientes. La pantalla de amigos limita su alcance a las acciones disponibles y necesita el ID de solicitud que el backend devuelve al enviarla.
+La ruta `/app/amigos` muestra únicamente la lista de amigos y enlaza con `/app/amigos/solicitudes`, que gestiona las bandejas y permite enviar, aceptar, rechazar o cancelar solicitudes. El enlace muestra el número de solicitudes recibidas pendientes cuando es mayor que cero. Las respuestas de solicitud incluyen resúmenes de solicitante y destinatario con ID, nombre, apellidos y email.
 
 ## Primeros pasos para arrancar el frontend
 
@@ -140,6 +148,8 @@ ng build
 | 2026-09-24 | Se sustituye la plantilla inicial de Angular por un shell raíz reutilizable con identidad visual común; el login queda como primera ruta lazy de la aplicación. |
 | 2026-10-07 | Se añade `core/layout/app-layout` para la zona `/app`, con sidebar y outlet de rutas hijas; login y registro siguen fuera del shell. |
 | 2026-10-14 | Se añade el flujo inicial de solicitudes de amistad y se conserva el ID de usuario devuelto por autenticación para construir sus peticiones. |
+| 2026-10-14 | Se amplía Amigos con listados de amistades y solicitudes pendientes, además de cancelar solicitudes enviadas. |
+| 2026-10-14 | Se separa la gestión de solicitudes de la lista de amigos y se centralizan todos los servicios HTTP en `core/services`. |
 
 ## Tareas recomendadas para el siguiente sprint
 

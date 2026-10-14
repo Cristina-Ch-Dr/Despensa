@@ -116,8 +116,7 @@ public class AgregarAmigoService implements AgregarAmigoPort {
     }
 
     private SolicitudAmistad buscarSolicitudPendiente(Long solicitudId, Long destinatarioId) {
-        SolicitudAmistad solicitud = solicitudAmistadRepository.findById(solicitudId)
-                .orElseThrow(() -> new SolicitudAmistadNoEncontradaException(solicitudId));
+        SolicitudAmistad solicitud = buscarSolicitud(solicitudId);
 
         if (!destinatarioId.equals(solicitud.getDestinatario().getUsuarioId())) {
             throw new SolicitudAmistadInvalidaException("Solo el destinatario puede responder a la solicitud.");
@@ -127,6 +126,11 @@ public class AgregarAmigoService implements AgregarAmigoPort {
         }
 
         return solicitud;
+    }
+
+    private SolicitudAmistad buscarSolicitud(Long solicitudId) {
+        return solicitudAmistadRepository.findById(solicitudId)
+                .orElseThrow(() -> new SolicitudAmistadNoEncontradaException(solicitudId));
     }
 
     private boolean haySolicitudPendiente(Long solicitanteId, Long destinatarioId) {
@@ -150,8 +154,8 @@ public class AgregarAmigoService implements AgregarAmigoPort {
     private SolicitudAmistadResponse mapearRespuesta(SolicitudAmistad solicitud) {
         return new SolicitudAmistadResponse(
                 solicitud.getSolicitudId(),
-                solicitud.getSolicitante().getUsuarioId(),
-                solicitud.getDestinatario().getUsuarioId(),
+                mapearUsuario(solicitud.getSolicitante()),
+                mapearUsuario(solicitud.getDestinatario()),
                 solicitud.getEstado()
         );
     }

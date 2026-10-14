@@ -2,6 +2,7 @@ package com.pabei.Despensa.application.service;
 
 import com.pabei.Despensa.application.services.AgregarAmigoService;
 import com.pabei.Despensa.domain.dto.SolicitudAmistadResponse;
+import com.pabei.Despensa.domain.dto.UsuarioResponse;
 import com.pabei.Despensa.domain.exceptions.SolicitudAmistadInvalidaException;
 import com.pabei.Despensa.domain.exceptions.SolicitudAmistadConflictoException;
 import com.pabei.Despensa.domain.model.DireccionSolicitudAmistad;
@@ -118,7 +119,15 @@ class AgregarAmigoServiceTest {
 
         SolicitudAmistadResponse response = agregarAmigoService.enviarSolicitud(1L, "bea@example.com");
 
-        assertEquals(new SolicitudAmistadResponse(10L, 1L, 2L, EstadoSolicitudAmistad.PENDIENTE), response);
+        assertEquals(
+                new SolicitudAmistadResponse(
+                        10L,
+                        new UsuarioResponse(1L, null, null, "ana@example.com"),
+                        new UsuarioResponse(2L, null, null, "bea@example.com"),
+                        EstadoSolicitudAmistad.PENDIENTE
+                ),
+                response
+        );
         verify(solicitudAmistadRepository, times(2))
                 .existsBySolicitante_UsuarioIdAndDestinatario_UsuarioIdAndEstado(
                         any(), any(), eq(EstadoSolicitudAmistad.PENDIENTE)

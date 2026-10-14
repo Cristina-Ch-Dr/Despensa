@@ -15,6 +15,10 @@ export const routes: Routes = [
 				loadComponent: () => import('./features/grupos/grupos').then((module) => module.Grupos),
 			},
 			{
+				path: 'amigos/solicitudes',
+				loadComponent: () => import('./features/amigos/solicitudes/solicitudes').then((module) => module.Solicitudes),
+			},
+			{
 				path: 'amigos',
 				loadComponent: () => import('./features/amigos/amigos').then((module) => module.Amigos),
 			},

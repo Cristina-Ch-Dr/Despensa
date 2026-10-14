@@ -38,7 +38,12 @@ class AmigosControllerTest {
     @Test
     void listarSolicitudesDelegaBandejaYEstadoAlPuerto() {
         List<SolicitudAmistadResponse> solicitudes = List.of(
-                new SolicitudAmistadResponse(10L, 2L, 1L, EstadoSolicitudAmistad.PENDIENTE)
+                new SolicitudAmistadResponse(
+                        10L,
+                        new UsuarioResponse(2L, "Juan", "Pérez", "juan@example.com"),
+                        new UsuarioResponse(1L, "Ana", "López", "ana@example.com"),
+                        EstadoSolicitudAmistad.PENDIENTE
+                )
         );
         when(agregarAmigoPort.listarSolicitudes(
                 1L, EstadoSolicitudAmistad.PENDIENTE, DireccionSolicitudAmistad.RECIBIDAS
@@ -52,4 +57,5 @@ class AmigosControllerTest {
                 1L, EstadoSolicitudAmistad.PENDIENTE, DireccionSolicitudAmistad.RECIBIDAS
         );
     }
+
 }

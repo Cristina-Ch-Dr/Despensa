@@ -7,6 +7,15 @@
 	--ink: #030403;
 	--muted: #65715f;
 	--line: #dce5d8;
+	--surface: #fff;
+	--surface-raised: #fafdf8;
+	--surface-muted: #f8faf6;
+	--green-strong: #3b5a2d;
+	--green-soft: #e2ebdc;
+	--danger: #c62828;
+	--focus-ring: 0 0 0 3px rgb(71 101 53 / 15%);
+	--focus-ring-danger: 0 0 0 3px rgb(198 40 40 / 15%);
+	--card-shadow: 0 1.5rem 4rem rgb(36 52 28 / 8%);
 	--font-body: 'DM Sans', sans-serif;
 	--font-display: 'Fraunces', Georgia, serif;
 	color: var(--ink);
@@ -30,6 +39,156 @@ body {
 button,
 input {
 	font: inherit;
+}
+
+h1,
+h2 {
+	color: var(--forest);
+	font-family: var(--font-display);
+	font-weight: 600;
+	letter-spacing: -0.02em;
+	margin: 0;
+}
+
+.eyebrow,
+.card-eyebrow {
+	color: var(--green);
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	margin: 0 0 0.65rem;
+	text-transform: uppercase;
+}
+
+.form-label {
+	color: var(--forest);
+	font-size: 0.85rem;
+	font-weight: 700;
+}
+
+.form-control {
+	background: var(--surface);
+	border: 1px solid var(--line);
+	border-radius: 0.25rem;
+	color: var(--ink);
+	font: inherit;
+	outline: 0;
+	transition: border-color 160ms ease, box-shadow 160ms ease;
+	width: 100%;
+}
+
+.form-control:focus {
+	border-color: var(--green);
+	box-shadow: var(--focus-ring);
+}
+
+.form-control:disabled {
+	opacity: 0.7;
+}
+
+.form-control[aria-invalid="true"] {
+	border-color: var(--danger);
+}
+
+.form-control[aria-invalid="true"]:focus {
+	box-shadow: var(--focus-ring-danger);
+}
+
+.button-primary,
+.button-secondary {
+	align-items: center;
+	border-radius: 0.25rem;
+	cursor: pointer;
+	display: inline-flex;
+	font: inherit;
+	font-weight: 700;
+	justify-content: center;
+}
+
+.button-primary {
+	background: var(--green-strong);
+	border: 0;
+	color: var(--surface);
+	transition: background 160ms ease, transform 160ms ease;
+}
+
+.button-primary:not(:disabled):hover {
+	background: var(--green);
+	transform: translateY(-1px);
+}
+
+.button-secondary {
+	background: var(--surface);
+	border: 1px solid var(--line);
+	color: var(--forest);
+}
+
+.button-secondary:not(:disabled):hover {
+	background: var(--surface-muted);
+}
+
+.button-primary:focus-visible,
+.button-secondary:focus-visible,
+a:focus-visible {
+	outline: 3px solid var(--green);
+	outline-offset: 3px;
+}
+
+.button-primary:disabled,
+.button-secondary:disabled {
+	cursor: wait;
+	opacity: 0.7;
+}
+
+.form-message,
+.message,
+.field-error,
+.form-error,
+.form-success {
+	font-size: 0.8rem;
+}
+
+.form-message--error,
+.message--error,
+.field-error,
+.form-error {
+	color: var(--danger);
+}
+
+.form-message--success,
+.message--success,
+.form-success {
+	color: var(--forest);
+}
+
+.empty-state,
+.error-state {
+	background: var(--surface);
+	border-radius: 0.35rem;
+	color: var(--muted);
+	font-size: 0.85rem;
+	margin: 0;
+	padding: 1rem;
+}
+
+.error-state {
+	align-items: center;
+	color: #a61b1b;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	justify-content: space-between;
+}
+
+.error-state p {
+	margin: 0;
+}
+
+.auth-card {
+	background: var(--surface-raised);
+	border: 1px solid var(--line);
+	border-radius: 0.5rem;
+	box-shadow: var(--card-shadow);
 }
 
 .brand-mark {

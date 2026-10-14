@@ -1,121 +1,77 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
-import { AmigosService } from './amigos.service';
+import {
+  AmigosService,
+  AmigoResponse,
+  SolicitudAmistadResponse,
+} from '../../core/services/amigos.service';
 
 @Component({
-  imports: [],
+  imports: [RouterLink],
   selector: 'app-amigos',
   styleUrl: './amigos.css',
   templateUrl: './amigos.html',
 })
-export class Amigos {
+export class Amigos implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly amigosService = inject(AmigosService);
 
   protected readonly usuarioId = this.authService.usuarioId;
-  protected readonly isSending = signal(false);
-  protected readonly isResponding = signal(false);
-  protected readonly sendError = signal('');
-  protected readonly sendSuccess = signal('');
-  protected readonly responseError = signal('');
-  protected readonly responseSuccess = signal('');
+  protected readonly amigos = signal<AmigoResponse[]>([]);
+  protected readonly solicitudesRecibidas = signal<SolicitudAmistadResponse[]>([]);
+  protected readonly isLoadingAmigos = signal(false);
+  protected readonly isLoadingSolicitudes = signal(false);
+  protected readonly amigosError = signal('');
+  protected readonly solicitudesError = signal('');
 
-  protected enviarSolicitud(event: SubmitEvent): void {
-    event.preventDefault();
-    const form = event.currentTarget as HTMLFormElement;
-    const emailDestinatario = String(new FormData(form).get('emailDestinatario') ?? '')
-      .trim()
-      .toLowerCase();
-    const solicitanteId = this.usuarioId();
+  ngOnInit(): void {
+    if (this.usuarioId() === null) {
+      return;
+    }
+    this.cargarAmigos();
+    this.cargarSolicitudesPendientes();
+  }
 
-    this.sendError.set('');
-    this.sendSuccess.set('');
-
-    if (solicitanteId === null) {
-      this.sendError.set('No hemos podido identificar tu cuenta. Inicia sesión de nuevo.');
+  protected cargarAmigos(): void {
+    const usuarioId = this.usuarioId();
+    if (usuarioId === null) {
       return;
     }
 
-    this.isSending.set(true);
-    this.amigosService.enviarSolicitud({ solicitanteId, emailDestinatario }).subscribe({
-      next: (response) => {
-        this.isSending.set(false);
-        this.sendSuccess.set(`Solicitud #${response.solicitudId} enviada a ${emailDestinatario}.`);
-        form.reset();
+    this.isLoadingAmigos.set(true);
+    this.amigosError.set('');
+    this.amigosService.listarAmigos(usuarioId).subscribe({
+      next: (amigos) => {
+        this.amigos.set(amigos);
+        this.isLoadingAmigos.set(false);
       },
-      error: (error: HttpErrorResponse) => {
-        this.isSending.set(false);
-        this.sendError.set(this.mensajeErrorEnvio(error));
+      error: () => {
+        this.isLoadingAmigos.set(false);
+        this.amigosError.set('No hemos podido cargar tus amigos. Inténtalo de nuevo.');
       },
     });
   }
 
-  protected responderSolicitud(event: SubmitEvent): void {
-    event.preventDefault();
-    const form = event.currentTarget as HTMLFormElement;
-    const formData = new FormData(form);
-    const solicitudId = Number(formData.get('solicitudId'));
-    const accion =
-      event.submitter instanceof HTMLButtonElement ? event.submitter.value : '';
-    const destinatarioId = this.usuarioId();
-
-    this.responseError.set('');
-    this.responseSuccess.set('');
-
-    if (accion !== 'aceptar' && accion !== 'rechazar') {
-      this.responseError.set('Selecciona si quieres aceptar o rechazar la solicitud.');
+  private cargarSolicitudesPendientes(): void {
+    const usuarioId = this.usuarioId();
+    if (usuarioId === null) {
       return;
     }
 
-    if (destinatarioId === null) {
-      this.responseError.set('No hemos podido identificar tu cuenta. Inicia sesión de nuevo.');
-      return;
-    }
-
-    this.isResponding.set(true);
-    const responder =
-      accion === 'aceptar'
-        ? this.amigosService.aceptarSolicitud(solicitudId, { destinatarioId })
-        : this.amigosService.rechazarSolicitud(solicitudId, { destinatarioId });
-
-    responder.subscribe({
-      next: (response) => {
-        this.isResponding.set(false);
-        const estado = response.estado === 'ACEPTADA' ? 'aceptada' : 'rechazada';
-        this.responseSuccess.set(`Solicitud #${response.solicitudId} ${estado} correctamente.`);
-        form.reset();
+    this.isLoadingSolicitudes.set(true);
+    this.solicitudesError.set('');
+    this.amigosService.listarSolicitudes(usuarioId, 'RECIBIDAS').subscribe({
+      next: (solicitudes) => {
+        this.solicitudesRecibidas.set(solicitudes);
+        this.isLoadingSolicitudes.set(false);
       },
-      error: (error: HttpErrorResponse) => {
-        this.isResponding.set(false);
-        this.responseError.set(this.mensajeErrorRespuesta(error));
+      error: () => {
+        this.isLoadingSolicitudes.set(false);
+        this.solicitudesError.set(
+          'No hemos podido comprobar si tienes solicitudes pendientes.',
+        );
       },
     });
-  }
-
-  private mensajeErrorEnvio(error: HttpErrorResponse): string {
-    if (error.status === 404) {
-      return 'No existe una cuenta con ese correo electrónico.';
-    }
-    if (error.status === 409) {
-      return 'Ya existe una solicitud pendiente o ya sois amigos.';
-    }
-    if (error.status === 400) {
-      return 'El correo electrónico o la solicitud no son válidos.';
-    }
-    return 'No hemos podido enviar la solicitud. Inténtalo de nuevo más tarde.';
-  }
-
-  private mensajeErrorRespuesta(error: HttpErrorResponse): string {
-    if (error.status === 404) {
-      return 'No se ha encontrado una solicitud pendiente con ese ID.';
-    }
-    if (error.status === 409) {
-      return 'Esta solicitud ya ha sido respondida.';
-    }
-    if (error.status === 400) {
-      return 'Solo la persona destinataria puede responder a esta solicitud.';
-    }
-    return 'No hemos podido responder a la solicitud. Inténtalo de nuevo más tarde.';
   }
 }

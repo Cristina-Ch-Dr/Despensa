@@ -1,0 +1,115 @@
+<section class="requests-page" aria-labelledby="requests-title">
+	<header class="page-header">
+		<a class="back-link" routerLink="/app/amigos">← Volver a amigos</a>
+		<p class="eyebrow">Conecta con tu gente</p>
+		<h1 id="requests-title">Gestionar solicitudes</h1>
+		<p class="page-intro">Envía invitaciones y revisa las solicitudes pendientes.</p>
+	</header>
+
+	@if (usuarioId() === null) {
+	<p class="empty-state" role="status">Inicia sesión para gestionar solicitudes.</p>
+	} @else {
+	<section class="requests-card add-request" aria-labelledby="send-request-title">
+		<div>
+			<p class="card-eyebrow">Nuevas amistades</p>
+			<h2 id="send-request-title">Enviar una solicitud</h2>
+		</div>
+		<form (submit)="enviarSolicitud($event)">
+			<label class="form-label" for="emailDestinatario">Correo electrónico</label>
+			<div class="form-controls">
+				<input class="form-control" id="emailDestinatario" name="emailDestinatario" type="email"
+					autocomplete="email" maxlength="254" placeholder="nombre@ejemplo.com" required
+					[disabled]="isSending()" aria-describedby="send-error send-success" />
+				<button class="button-primary" type="submit" [disabled]="isSending()">
+					{{ isSending() ? 'Enviando...' : 'Enviar solicitud' }}
+				</button>
+			</div>
+			<p id="send-error" class="message message--error" aria-live="polite">{{ sendError() }}</p>
+			<p id="send-success" class="message message--success" aria-live="polite">{{ sendSuccess() }}</p>
+		</form>
+	</section>
+
+	@if (gestionError()) {
+	<p class="message message--error" role="alert">{{ gestionError() }}</p>
+	}
+	@if (gestionSuccess()) {
+	<p class="message message--success" role="status">{{ gestionSuccess() }}</p>
+	}
+
+	<div class="requests-grid">
+		<section class="requests-column" aria-labelledby="received-title">
+			<div class="column-heading">
+				<h2 id="received-title">Recibidas</h2>
+				<span class="count-badge">{{ solicitudesRecibidas().length }}</span>
+			</div>
+			@if (isLoadingRecibidas()) {
+			<p class="empty-state" role="status">Cargando solicitudes...</p>
+			} @else if (recibidasError()) {
+			<div class="error-state" role="alert">
+				<p>{{ recibidasError() }}</p>
+				<button class="button-secondary" type="button"
+					(click)="cargarSolicitudes('RECIBIDAS')">Reintentar</button>
+			</div>
+			} @else if (solicitudesRecibidas().length === 0) {
+			<p class="empty-state">No tienes solicitudes pendientes.</p>
+			} @else {
+			<ul class="request-list">
+				@for (solicitud of solicitudesRecibidas(); track solicitud.solicitudId) {
+				<li class="request-item">
+					<div class="request-details">
+						<strong>Solicitud de {{ solicitud.solicitante.nombre }} {{ solicitud.solicitante.apellidos
+							}}</strong>
+						<span>{{ solicitud.solicitante.nombre }} · {{ solicitud.solicitante.email }}</span>
+					</div>
+					<div class="request-actions">
+						<button class="button-primary" type="button" [disabled]="updatingSolicitudId() !== null"
+							(click)="responderSolicitud(solicitud.solicitudId, 'aceptar')">
+							{{ updatingSolicitudId() === solicitud.solicitudId ? 'Procesando...' : 'Aceptar' }}
+						</button>
+						<button class="button-secondary" type="button" [disabled]="updatingSolicitudId() !== null"
+							(click)="responderSolicitud(solicitud.solicitudId, 'rechazar')">
+							Rechazar
+						</button>
+					</div>
+				</li>
+				}
+			</ul>
+			}
+		</section>
+
+		<section class="requests-column" aria-labelledby="sent-title">
+			<div class="column-heading">
+				<h2 id="sent-title">Enviadas</h2>
+				<span class="count-badge">{{ solicitudesEnviadas().length }}</span>
+			</div>
+			@if (isLoadingEnviadas()) {
+			<p class="empty-state" role="status">Cargando solicitudes...</p>
+			} @else if (enviadasError()) {
+			<div class="error-state" role="alert">
+				<p>{{ enviadasError() }}</p>
+				<button class="button-secondary" type="button"
+					(click)="cargarSolicitudes('ENVIADAS')">Reintentar</button>
+			</div>
+			} @else if (solicitudesEnviadas().length === 0) {
+			<p class="empty-state">No tienes solicitudes enviadas pendientes.</p>
+			} @else {
+			<ul class="request-list">
+				@for (solicitud of solicitudesEnviadas(); track solicitud.solicitudId) {
+				<li class="request-item">
+					<div class="request-details">
+						<strong>Solicitud para {{ solicitud.destinatario.nombre }} {{ solicitud.destinatario.apellidos
+							}}</strong>
+						<span>{{ solicitud.destinatario.nombre }} · {{ solicitud.destinatario.email }}</span>
+					</div>
+					<button class="button-secondary" type="button" [disabled]="updatingSolicitudId() !== null"
+						(click)="cancelarSolicitud(solicitud.solicitudId)">
+						{{ updatingSolicitudId() === solicitud.solicitudId ? 'Cancelando...' : 'Cancelar' }}
+					</button>
+				</li>
+				}
+			</ul>
+			}
+		</section>
+	</div>
+	}
+</section>

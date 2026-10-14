@@ -22,14 +22,15 @@ src/
 │   │   ├── layout/
 │   │   │   └── app-layout/    # Banner, navegación lateral y outlet de la app
 │   │   ├── models/            # Tipos y modelos del dominio
-│   │   └── services/          # Servicios transversales, como AuthService
+│   │   └── services/          # Todos los servicios HTTP, también los de una feature
 │   └── features/
 │       ├── auth/
 │       │   ├── login/
 │       │   └── register/
 │       ├── home/              # Página inicial dentro del layout
 │       ├── grupos/            # Grupos
-│       └── amigos/            # Envío y respuesta de solicitudes de amistad
+│       └── amigos/            # Listado y gestión de amistades
+│           └── solicitudes/   # Envío y respuesta de solicitudes
 ├── assets/                    # Recursos estáticos
 ├── environments/              # Configuración de entorno
 ├── main.ts                    # Arranque de la aplicación
@@ -67,7 +68,8 @@ Esta estructura es una guía de crecimiento, no una invitación a crear carpetas
 - **Servicios:** encapsulan las llamadas HTTP y las operaciones compartidas de una funcionalidad. Inyecta dependencias con `inject()` y sigue el patrón observable de `HttpClient` ya usado por `AuthService`.
 - **Modelos:** define tipos explícitos para las entidades, los resúmenes y los contratos de API. Usa formas de resumen para relaciones cuando no se necesite cargar la entidad completa, evitando referencias circulares y respuestas innecesariamente grandes.
 - **Rutas:** registra las pantallas en `app.routes.ts` y conserva la carga diferida con `loadComponent` para las nuevas páginas standalone.
-- **Estilos:** deja tokens, tipografía y reglas globales en `src/styles.css`; mantén los estilos de una pantalla junto a su componente. Reutiliza las variables CSS existentes antes de introducir colores o escalas duplicadas.
+- **Estilos:** centraliza tokens y patrones reutilizables (títulos, campos, botones, mensajes y tarjetas de autenticación) en `src/styles.css`; deja allí también los colores y estados comunes. Mantén en cada componente la disposición y los detalles propios de su pantalla.
+- **Diseño responsive:** diseña y revisa siempre cada página en móvil además de escritorio. En pantallas pequeñas, evita alturas mínimas, centrados verticales o espacios forzados que separen la navegación del contenido; comprueba que el contenido comienza inmediatamente después de los accesos directos y que no aparecen huecos innecesarios.
 
 ## Añadir páginas al layout
 
@@ -90,7 +92,7 @@ El shell de `/app` está en `core/layout/app-layout`; su `RouterOutlet` es el á
 
    Usa `exact: true` para una página con una única ruta y `false` cuando el enlace deba seguir activo en rutas descendientes. El enlace solo debe incorporarse cuando su ruta exista.
 
-El banner, el sidebar responsive, el enlace para saltar al contenido y la zona principal se mantienen en el layout. Login y registro continúan fuera de `/app` para no mostrar navegación de la zona de compras en los formularios de autenticación. Las rutas `/app/grupos` y `/app/amigos` están creadas como páginas vacías para completar más adelante; su presencia no implica que esas funcionalidades ya estén implementadas.
+El banner, el sidebar responsive, el enlace para saltar al contenido y la zona principal se mantienen en el layout. Login y registro continúan fuera de `/app` para no mostrar navegación de la zona de compras en los formularios de autenticación. `/app/amigos` muestra la lista de amigos y `/app/amigos/solicitudes` gestiona sus solicitudes.
 
 ## Convenciones de implementación
 
@@ -107,12 +109,19 @@ El banner, el sidebar responsive, el enlace para saltar al contenido y la zona p
 
 `AuthService` ofrece `login` y `register` en `/api/auth/login` y `/api/auth/register`. La respuesta actual del backend contiene `usuarioId`, `nombre`, `apellidos` y `email`; el servicio conserva el ID en `sessionStorage` para las operaciones que necesitan identificar al usuario. Si la respuesta contiene un token, también lo guarda y lo expone mediante un `signal`; `logout()` elimina ambos datos. Login y registro gestionan actualmente su propio estado de envío y sus mensajes.
 
-`AmigosService`, dentro de `features/amigos`, ofrece las operaciones de solicitudes del backend:
+El cierre de sesión actual es local: elimina el token y el ID de usuario del navegador y redirige a `/login`; no requiere un endpoint si el backend usa JWT sin estado. Un endpoint de logout solo sería necesario si el servidor debe revocar o invalidar tokens.
 
+Todos los servicios HTTP se guardan en `core/services`, incluidos los específicos de una feature. Las vistas y la lógica de presentación se mantienen junto a su funcionalidad.
+
+`AmigosService`, en `core/services`, ofrece las operaciones de amistades del backend:
+
+- `GET /api/amigos?usuarioId={id}` para listar amigos.
+- `GET /api/amigos/solicitudes?usuarioId={id}&estado=PENDIENTE&direccion=RECIBIDAS|ENVIADAS` para las bandejas de solicitudes pendientes.
 - `POST /api/amigos/solicitudes` para enviar una solicitud (`solicitanteId`, `emailDestinatario`).
 - `POST /api/amigos/solicitudes/{solicitudId}/aceptar` y `.../{solicitudId}/rechazar` para responder (`destinatarioId`).
+- `DELETE /api/amigos/solicitudes/{solicitudId}?solicitanteId={id}` para cancelar una solicitud enviada pendiente.
 
-La pantalla permite enviar una solicitud por correo y responder indicando el ID recibido. El backend todavía no expone consultas para listar amigos o solicitudes pendientes, por lo que la interfaz no presenta listados inventados.
+La pantalla `/app/amigos` lista los amigos y enlaza con `/app/amigos/solicitudes`; el enlace muestra un contador cuando hay solicitudes recibidas pendientes. La pantalla de solicitudes permite enviar, aceptar, rechazar y cancelar solicitudes. Cada respuesta de solicitud incluye los resúmenes de solicitante y destinatario (`usuarioId`, nombre, apellidos y email) para identificar a las personas directamente en las bandejas.
 
 Antes de ampliar la autenticación, confirma con el contrato real del backend la forma de la respuesta y las necesidades de sesión. No asumas que existe una sesión de usuario completa porque haya un token almacenado. Si se incorporan peticiones autenticadas, concentra la adición del token en un interceptor y decide el comportamiento de rutas protegidas de forma coherente. No guardes secretos ni credenciales en el código fuente.
 

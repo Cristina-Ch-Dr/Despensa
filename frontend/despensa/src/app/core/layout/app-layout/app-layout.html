@@ -15,21 +15,23 @@
 			<nav aria-label="Páginas">
 				<ul class="app-sidebar__links">
 					@for (item of navigationItems; track item.route) {
-						<li>
-							<a
-								[routerLink]="item.route"
-								routerLinkActive="app-sidebar__link--active"
-								[routerLinkActiveOptions]="{ exact: item.exact }"
-								ariaCurrentWhenActive="page"
-								class="app-sidebar__link"
-							>
-								<img class="app-sidebar__icon" [src]="item.icon" alt="" aria-hidden="true" />
-								{{ item.label }}
-							</a>
-						</li>
+					<li>
+						<a [routerLink]="item.route" routerLinkActive="app-sidebar__link--active"
+							[routerLinkActiveOptions]="{ exact: item.exact }" ariaCurrentWhenActive="page"
+							class="app-sidebar__link">
+							<img class="app-sidebar__icon" [src]="item.icon" alt="" aria-hidden="true" />
+							{{ item.label }}
+						</a>
+					</li>
 					}
 				</ul>
 			</nav>
+			<div class="app-sidebar__bottom">
+				<button class="app-sidebar__link app-sidebar__logout" type="button" (click)="logout()">
+					<img class="app-sidebar__icon" src="/assets/icons/logout.svg" alt="" aria-hidden="true" />
+					Cerrar sesión
+				</button>
+			</div>
 		</aside>
 
 		<main class="app-content" id="main-content">

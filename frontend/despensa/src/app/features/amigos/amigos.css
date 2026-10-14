@@ -8,27 +8,11 @@
 }
 
 .friends-page__header {
+	align-items: center;
+	display: flex;
+	gap: 1rem;
+	justify-content: space-between;
 	margin-bottom: 2rem;
-	max-width: 42rem;
-}
-
-.eyebrow,
-.card-eyebrow {
-	color: var(--green);
-	font-size: 0.72rem;
-	font-weight: 700;
-	letter-spacing: 0.14em;
-	margin: 0 0 0.8rem;
-	text-transform: uppercase;
-}
-
-h1,
-h2 {
-	color: var(--forest);
-	font-family: var(--font-display);
-	font-weight: 600;
-	letter-spacing: -0.02em;
-	margin: 0;
 }
 
 h1 {
@@ -36,164 +20,131 @@ h1 {
 	line-height: 1;
 }
 
-.friends-page__intro,
-.card-copy,
-.feature-note {
-	color: var(--muted);
-	line-height: 1.6;
-}
-
-.friends-page__intro {
-	font-size: 1rem;
-	margin: 1rem 0 0;
-}
-
-.friends-grid {
-	display: grid;
-	gap: 1rem;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.friends-card {
-	background: #fff;
-	border: 1px solid var(--line);
-	border-radius: 0.5rem;
-	box-shadow: 0 1rem 2.5rem rgb(36 52 28 / 5%);
-	padding: clamp(1.25rem, 3vw, 2rem);
-}
-
-.card-eyebrow {
-	margin-bottom: 0.5rem;
-}
-
 h2 {
-	font-size: clamp(1.45rem, 3vw, 1.9rem);
+	font-size: 1.65rem;
 	line-height: 1.15;
 }
 
-.card-copy {
-	font-size: 0.9rem;
-	margin: 0.75rem 0 1.25rem;
-}
-
-form {
-	display: grid;
-	gap: 0.4rem;
-}
-
-label {
-	color: var(--forest);
-	font-size: 0.85rem;
-	font-weight: 700;
-}
-
-input {
-	background: #fff;
-	border: 1px solid var(--line);
-	border-radius: 0.25rem;
-	color: var(--ink);
-	font: inherit;
-	min-height: 2.8rem;
-	outline: 0;
-	padding: 0.5rem 0.75rem;
-	width: 100%;
-}
-
-input:focus {
-	border-color: var(--green);
-	box-shadow: 0 0 0 3px rgb(71 101 53 / 15%);
-}
-
-input:disabled {
-	opacity: 0.7;
-}
-
-.form-message {
-	font-size: 0.8rem;
-	margin: 0;
-	min-height: 1.2em;
-}
-
-.form-message:empty {
-	display: none;
-}
-
-.form-message--error {
-	color: #c62828;
-}
-
-.form-message--success {
-	color: var(--forest);
-}
-
-button {
+.requests-link {
 	align-items: center;
-	background: #3b5a2d;
-	border: 0;
-	border-radius: 0.25rem;
+	border-radius: .3rem;
 	color: #fff;
-	cursor: pointer;
 	display: inline-flex;
-	font: inherit;
+	font-size: .85rem;
 	font-weight: 700;
+	gap: .65rem;
 	justify-content: center;
 	min-height: 2.8rem;
-	padding: 0.5rem 1rem;
-	transition: background 160ms ease, transform 160ms ease;
+	padding: .5rem .9rem;
+	text-decoration: none;
 }
 
-button:not(:disabled):hover {
-	background: var(--green);
-	transform: translateY(-1px);
+.requests-badge {
+	align-items: center;
+	background: #fff;
+	border-radius: 50%;
+	color: var(--forest);
+	display: inline-flex;
+	font-size: .75rem;
+	height: 1.45rem;
+	justify-content: center;
+	min-width: 1.45rem;
+	padding: 0 .2rem;
 }
 
-button:focus-visible {
-	outline: 3px solid var(--green);
-	outline-offset: 3px;
+.friends-section {
+	margin-top: 1.5rem;
 }
 
-button:disabled {
-	cursor: wait;
-	opacity: 0.7;
-}
-
-.response-actions {
+.section-heading {
+	align-items: center;
 	display: flex;
-	flex-wrap: wrap;
-	gap: 0.65rem;
-	margin-top: 0.4rem;
+	justify-content: space-between;
+	margin-bottom: 1rem;
 }
 
-.response-actions button {
-	flex: 1 1 8rem;
+.count-badge,
+.person-avatar {
+	align-items: center;
+	background: var(--green-soft);
+	color: var(--forest);
+	display: inline-flex;
+	font-weight: 700;
+	justify-content: center;
 }
 
-.response-actions .button-secondary {
+.count-badge {
+	border-radius: 999px;
+	height: 2rem;
+	min-width: 2rem;
+}
+
+.people-list {
+	display: grid;
+	gap: .7rem;
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.person-card {
+	align-items: center;
 	background: #fff;
 	border: 1px solid var(--line);
+	border-radius: .4rem;
+	display: flex;
+	gap: .8rem;
+	min-width: 0;
+	padding: .85rem 1rem;
+}
+
+.person-avatar {
+	border-radius: 50%;
+	flex: 0 0 2.6rem;
+	height: 2.6rem;
+}
+
+.person-card__details {
+	display: grid;
+	gap: .2rem;
+	min-width: 0;
+}
+
+.person-card__details strong {
 	color: var(--forest);
+	font-size: .9rem;
 }
 
-.response-actions .button-secondary:not(:disabled):hover {
-	background: #f1f5ee;
+.person-card__details span {
+	color: var(--muted);
+	font-size: .8rem;
+	overflow-wrap: anywhere;
 }
 
-.feature-note {
-	font-size: 0.8rem;
-	margin: 1.25rem 0 0;
-	max-width: 55rem;
+.status-note {
+	color: var(--muted);
+	font-size: .8rem;
+	margin-top: 1rem;
 }
 
-.account-notice {
-	background: #fff;
-	border: 1px solid var(--line);
-	border-radius: 0.35rem;
-	color: var(--forest);
-	padding: 1rem 1.25rem;
+.visually-hidden {
+	clip: rect(0, 0, 0, 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
 }
 
-@media (max-width: 760px) {
-	.friends-grid {
-		grid-template-columns: minmax(0, 1fr);
+@media (max-width: 560px) {
+	.friends-page__header {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+
+	.requests-link {
+		align-self: stretch;
 	}
 }

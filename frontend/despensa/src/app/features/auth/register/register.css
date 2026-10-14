@@ -1,21 +1,12 @@
 .register-page {
-    background: #fafdf8;
-    border: 1px solid var(--line);
-    border-radius: 0.5rem;
-    box-shadow: 0 1.5rem 4rem rgb(36 52 28 / 8%);
     margin: clamp(2rem, 10vh, 5rem) auto 0;
     max-width: 31rem;
     padding: clamp(1.5rem, 3vw, 2.25rem) clamp(1.5rem, 5vw, 3rem);
 }
 
 h1 {
-    color: var(--forest);
-    font-family: var(--font-display);
     font-size: clamp(2.1rem, 5vw, 2.8rem);
-    font-weight: 600;
-    letter-spacing: -0.02em;
     line-height: 1;
-    margin: 0;
 }
 
 .register-page>p {
@@ -30,61 +21,24 @@ form {
     margin-top: 1.2rem;
 }
 
-label {
-    color: var(--forest);
-    font-size: 0.9rem;
-    font-weight: 700;
-}
-
-input {
+.register-page .form-control {
     background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 0.25rem;
-    color: var(--ink);
-    font: inherit;
     min-height: 2.8rem;
-    outline: 0;
     padding: 0.5rem 0.8rem;
-    transition: border-color 160ms ease, box-shadow 160ms ease;
-    width: 100%;
 }
 
-input:focus {
-    border-color: var(--green);
-    box-shadow: 0 0 0 3px rgb(71 101 53 / 15%);
-}
-
-input[aria-invalid="true"] {
-    border-color: #c62828;
-}
-
-input[aria-invalid="true"]:focus {
-    box-shadow: 0 0 0 3px rgb(198 40 40 / 15%);
+.register-page .form-label {
+    font-size: 0.9rem;
 }
 
 form>label:not(:first-child) {
     margin-top: 0.35rem;
 }
 
-.field-error,
-.form-error,
-.form-success,
-.hint {
-    font-size: 0.8rem;
-    margin: 0;
-}
-
-.field-error,
-.form-error {
-    color: #c62828;
-}
-
-.form-success {
-    color: var(--forest);
-}
-
 .hint {
     color: var(--muted);
+    font-size: 0.8rem;
+    margin: 0;
 }
 
 .field-error:empty,
@@ -93,32 +47,11 @@ form>label:not(:first-child) {
     display: none;
 }
 
-button {
-    align-items: center;
-    background: #3b5a2d;
-    border: 0;
-    border-radius: 0.25rem;
-    color: var(--paper);
-    cursor: pointer;
-    display: flex;
-    font: inherit;
-    font-weight: 700;
-    justify-content: center;
+.register-page button {
     margin-top: 0.9rem;
     min-height: 2.9rem;
     padding: 0 1.25rem;
-    transition: background 160ms ease, transform 160ms ease;
     width: 100%;
-}
-
-button:not(:disabled):hover {
-    background: var(--green);
-    transform: translateY(-1px);
-}
-
-button:disabled {
-    cursor: wait;
-    opacity: 0.7;
 }
 
 .register-page>a {

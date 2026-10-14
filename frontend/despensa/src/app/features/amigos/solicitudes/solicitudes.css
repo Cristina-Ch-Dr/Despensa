@@ -1,0 +1,182 @@
+:host {
+	display: block;
+}
+
+.requests-page {
+	margin: 0 auto;
+	max-width: 68rem;
+}
+
+.page-header {
+	margin-bottom: 2rem;
+}
+
+.back-link {
+	color: var(--green);
+	display: inline-block;
+	font-size: .85rem;
+	font-weight: 700;
+	margin-bottom: 1.5rem;
+}
+
+h1 {
+	font-size: clamp(2.2rem, 6vw, 3.5rem);
+	line-height: 1;
+}
+
+h2 {
+	font-size: 1.45rem;
+	line-height: 1.2;
+}
+
+.page-intro,
+.feature-note {
+	color: var(--muted);
+	font-size: .9rem;
+	line-height: 1.6;
+	margin: .85rem 0 0;
+}
+
+.requests-card,
+.requests-column {
+	background: var(--surface);
+	border: 1px solid var(--line);
+	border-radius: .5rem;
+}
+
+.add-request {
+	align-items: center;
+	display: grid;
+	gap: 1.5rem;
+	grid-template-columns: minmax(13rem, .8fr) minmax(18rem, 1.2fr);
+	margin-bottom: 1.5rem;
+	padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+form {
+	display: grid;
+	gap: .4rem;
+}
+
+.form-controls {
+	display: flex;
+	gap: .65rem;
+}
+
+.form-controls .form-control {
+	min-height: 2.8rem;
+	padding: .5rem .75rem;
+}
+
+.form-controls .button-primary {
+	min-height: 2.7rem;
+	padding: .5rem .85rem;
+}
+
+.message {
+	margin: .2rem 0;
+}
+
+.requests-grid {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.requests-column {
+	min-width: 0;
+	padding: 1.25rem;
+}
+
+.column-heading {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 1rem;
+}
+
+.count-badge {
+	align-items: center;
+	background: var(--green-soft);
+	border-radius: 999px;
+	color: var(--forest);
+	display: inline-flex;
+	font-size: .8rem;
+	font-weight: 700;
+	height: 1.8rem;
+	justify-content: center;
+	min-width: 1.8rem;
+}
+
+.request-list {
+	display: grid;
+	gap: .65rem;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.request-item {
+	align-items: center;
+	border: 1px solid var(--line);
+	border-radius: .35rem;
+	display: flex;
+	flex-wrap: wrap;
+	gap: .75rem;
+	justify-content: space-between;
+	padding: .8rem;
+}
+
+.request-details {
+	display: grid;
+	gap: .2rem;
+	min-width: 0;
+}
+
+.request-details strong {
+	color: var(--forest);
+	font-size: .9rem;
+}
+
+.request-details span {
+	color: var(--muted);
+	font-size: .8rem;
+}
+
+.request-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: .45rem;
+}
+
+.request-actions button {
+	min-height: 2.4rem;
+	padding: .4rem .65rem;
+}
+
+.feature-note {
+	font-size: .8rem;
+}
+
+@media (max-width: 760px) {
+
+	.add-request,
+	.requests-grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@media (max-width: 520px) {
+	.form-controls {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.request-item {
+		align-items: stretch;
+	}
+
+	.request-item>button {
+		width: 100%;
+	}
+}

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SolicitudAmistadResponse {
     private Long solicitudId;
-    private Long solicitanteId;
-    private Long destinatarioId;
+    private UsuarioResponse solicitante;
+    private UsuarioResponse destinatario;
     private EstadoSolicitudAmistad estado;
 }
